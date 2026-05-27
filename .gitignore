@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Data files
+data.xlsx
+output.xlsx
+error_log.txt
+
+# OS
+.DS_Store
+Thumbs.db
