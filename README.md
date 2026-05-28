@@ -1,30 +1,83 @@
-# LLM Data Cleaning Pipeline
+# Automotive Product Description Standardisation Pipeline
 
-A lightweight LLM-based data cleaning pipeline for extracting structured product information from messy product descriptions.
+A lightweight LLM-powered data cleaning and standardisation pipeline for processing noisy automotive product catalogue descriptions.
 
-This project uses OpenAI models to standardise raw descriptions into clean and structured outputs with validation, retry logic, batch processing and error handling.
+The project standardises messy real-world inventory data by removing internal reference codes, unnecessary modifiers and inconsistent formatting while preserving important business information such as manufacturer, model, year range and product type.
+
+Designed for scalable catalogue data cleaning workflows with validation, retry handling, batch processing and structured Excel output.
 
 ---
 
 ## Features
 
-- LLM-powered text cleaning
-- Batch processing 
-- Automatic fallback to smaller batches
-- Structured output (Brand + Product)
-- Validation layer
-- Retry mechanism
-- Error logging
-- Parallel execution
-- Excel input / output
-- FastAPI API
-- Docker deployment
+* LLM-powered product description cleaning
+* Automotive catalogue standardisation
+* Preservation of meaningful vehicle metadata
+* Removal of noisy internal product codes
+* Batch processing
+* Automatic retry and fallback logic
+* Validation layer
+* Parallel execution
+* Excel input/output support
+* Error logging
+* FastAPI API support
+* Docker deployment ready
+
+---
+
+## Example Transformations
+
+| Raw Description                                    | Cleaned Description       |
+| -------------------------------------------------- | ------------------------- |
+| BMW X2 18-24 Conscious Carpet 3639-0               | BMW X2 18-24 Carpet       |
+| BMW Z4 (G29) 18-24 Conscious Carpet 4380           | BMW Z4 18-24 Carpet       |
+| BMW X4 14- Boot Mat Conscious Carpet               | BMW X4 14- Boot Mat       |
+
+---
+
+## Processing Goals
+
+The pipeline is designed to preserve:
+
+* Manufacturer / Brand
+* Vehicle model
+* Meaningful year ranges
+* Important product type
+
+The pipeline removes:
+
+* Internal product reference codes
+* Irrelevant numeric identifiers
+* Duplicate wording
+* Excessive modifiers
+* Inconsistent formatting
+* Noisy metadata
+
+---
+
+## Processing Flow
+
+```text
+Excel Input
+↓
+Batch Processing
+↓
+LLM Standardisation
+↓
+Validation
+↓
+Retry Logic
+↓
+Structured Output
+↓
+Excel Export
+```
 
 ---
 
 ## Project Structure
 
-```
+```text
 data_cleaning_pipeline/
 
 ├── main.py
@@ -42,110 +95,80 @@ data_cleaning_pipeline/
 
 ---
 
-## Input
+## Input Format
 
-Place the source file in project root:
+Input file:
 
-```
+```text
 data.xlsx
 ```
 
 Required column:
 
-```
+```text
 Desc
 ```
 
-Example:
+Example input:
 
-| Desc |
-|------|
-| BMW X5 Rubber Floor Mat Black |
-| Audi Card Holder 2024 |
+| Desc                                     |
+| BMW X2 18-24 Conscious Carpet 3639-0               |
+| BMW Z4 (G29) 18-24 Conscious Carpet 4380           | 
 
 ---
 
-## Output
+## Output Format
 
-Generated:
+Generated file:
 
-```
+```text
 output.xlsx
 ```
 
-Output format:
+Example output:
 
-| original | brand | product | cleaned | is_valid |
-|----------|--------|---------|---------|----------|
-| BMW X5 Rubber Floor Mat | BMW | floor mat | BMW floor mat | TRUE |
+| original                             | cleaned             | is_valid |
+| ------------------------------------ | ------------------- | -------- |
+| BMW X2 18-24 Conscious Carpet 3639-0 | BMW X2 18-24 Carpet | TRUE     |
 
 Error records:
 
-```
+```text
 error_log.txt
 ```
 
 ---
 
-## Processing Flow
+## Current Cleaning Logic
 
-```
-Excel Input
-↓
+The current pipeline focuses on:
 
-Batch Processing
-↓
-
-LLM Extraction
-↓
-
-Validation
-↓
-
-Retry
-↓
-
-Structured Output
-↓
-
-Excel Export
-```
-
----
-
-## Prompt Rules
-
-Current extraction logic:
-
-- Keep ONLY brand + product
-- Remove colours
-- Remove numbers
-- Remove extra details
-- Do NOT guess
-- Preserve original if unclear
-
----
-
-## Future Improvements
-
-- Resume support
-- Cache layer
-- Docker deployment
-- Rule-based preprocessing
-- API service (FastAPI)
+* Preserving meaningful vehicle information
+* Preserving year ranges when relevant
+* Removing internal stock identifiers
+* Removing unnecessary descriptive text
+* Standardising product naming
+* Avoiding hallucinated product names
 
 ---
 
 ## Tech Stack
 
-- Python
-- OpenAI API
-- Pandas
-- JSON
-- ThreadPoolExecutor
+* Python
+* OpenAI API
+* Pandas
+* JSON
+* ThreadPoolExecutor
+* FastAPI
+* Docker
 
 ---
 
-## Author
+## Future Improvements
 
-Hanyi Jiang
+* Resume support
+* Cache layer
+* Rule-based preprocessing
+* API deployment
+* Admin review interface
+* Vector search for duplicate detection
