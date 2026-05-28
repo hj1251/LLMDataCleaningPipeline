@@ -8,7 +8,8 @@ This project uses OpenAI models to standardise raw descriptions into clean and s
 
 ## Features
 
-- Batch processing (default: 50 rows)
+- LLM-powered text cleaning
+- Batch processing 
 - Automatic fallback to smaller batches
 - Structured output (Brand + Product)
 - Validation layer
@@ -16,6 +17,8 @@ This project uses OpenAI models to standardise raw descriptions into clean and s
 - Error logging
 - Parallel execution
 - Excel input / output
+- FastAPI API
+- Docker deployment
 
 ---
 
