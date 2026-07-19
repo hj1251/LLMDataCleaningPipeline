@@ -6,9 +6,7 @@ __pycache__/
 # Environment
 .env
 
-# Data files
-data.xlsx
-output.xlsx
+# Data files (generated output, not the bundled sample_data/)
 upload_file.xlsx
 error_log.txt
 cache.json

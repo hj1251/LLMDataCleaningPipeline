@@ -38,11 +38,11 @@ Ships with a bundled demo dataset, so the full pipeline runs out of the box with
 ## Processing Flow
 
 ```text
-SQL Server (or demo CSV)
+SQL Server (or demo Excel data)
         ↓
 Top Level Code catalogue
         ↓
-Diff against items.csv  →  new items only
+Diff against items already in the ERP  →  new items only
         ↓
 Batch LLM cleaning + validation + retry
         ↓
@@ -53,16 +53,13 @@ Length validation (OK / ERROR)
 upload_file.xlsx  (ready to re-upload to the ERP)
 ```
 
-A lighter **quick-clean** mode is also available for cleaning a one-off Excel file
-that isn't tied to the ERP catalogue at all (see [Usage](#usage)).
-
 ---
 
 ## Project Structure
 
 ```text
 LLMDataCleaningPipeline/
-├── main.py                    # CLI entrypoint
+├── main.py                    # CLI entrypoint — python main.py runs the whole pipeline
 ├── pipeline/
 │   ├── config.py               # environment-driven settings
 │   ├── db.py                   # SQL Server extraction (+ demo fallback)
@@ -72,11 +69,10 @@ LLMDataCleaningPipeline/
 │   ├── validation.py           # structural validation rules
 │   ├── clean.py                # batching, concurrency, retry orchestration
 │   ├── merge.py                # merge cleaned data into ERP upload format
-│   ├── run.py                  # full ERP pipeline orchestration
-│   └── quick_clean.py          # standalone Excel-column cleaning
+│   └── run.py                  # pipeline orchestration (ties the above together)
 ├── sample_data/
-│   ├── toplevelcode_demo.csv   # demo catalogue (used when SQL Server is unset)
-│   └── items_demo.csv          # demo "already imported" items
+│   ├── toplevelcode_demo.xlsx  # demo catalogue (used when SQL Server is unset)
+│   └── items_demo.xlsx         # demo "already imported" items
 ├── tests/                      # pytest unit tests
 ├── .github/workflows/tests.yml # CI
 ├── .env.example
@@ -84,6 +80,10 @@ LLMDataCleaningPipeline/
 ├── requirements-dev.txt
 └── Dockerfile
 ```
+
+Everything under `pipeline/` is a single step in the flow above; `main.py` just wires
+them together in order. `sample_data/` is only there so the pipeline is runnable
+without a real ERP connection — swap in real SQL Server credentials via `.env` and it's ignored.
 
 ---
 
@@ -106,21 +106,13 @@ Edit `.env` and set at least `OPENAI_API_KEY`. Everything else is optional:
 
 ## Usage
 
-Run the full ERP pipeline (extract → diff → clean → merge → export):
-
 ```bash
 python main.py
-# or explicitly
-python main.py pipeline
 ```
 
-This produces `upload_file.xlsx` (ERP-ready) and, if any rows failed, `error_log.txt`.
-
-Clean a standalone Excel file (must contain a `Desc` column) without touching the ERP:
-
-```bash
-python main.py quick-clean data.xlsx -o output.xlsx
-```
+This extracts the catalogue, filters out items already in the ERP, cleans the new
+descriptions with the LLM, and writes `upload_file.xlsx` (ERP-ready). If any rows
+failed, they're written to `error_log.txt`.
 
 Run with Docker:
 
@@ -133,21 +125,13 @@ docker run --env-file .env llm-data-cleaning-pipeline
 
 ## Output Format
 
-**Full pipeline** → `upload_file.xlsx`:
+`upload_file.xlsx`:
 
-| STKCODE     | STKNAME                              | STK_COSTPRICE | STK_BASEPRICE | stk_sort_key | Cleaned_Desc         | Validation |
-| ----------- | ------------------------------------- | -------------- | -------------- | ------------- | --------------------- | ---------- |
-| BMW-Z4-002  | BMW Z4 (G29) 18-24 Conscious Carpet 4380 | 52.00       | 89.99          | TOP LEVEL CODE      | BMW Z4 18-24 Carpet    | OK         |
+| STKCODE     | STKNAME                                  | STK_COSTPRICE | STK_BASEPRICE | stk_sort_key   | Cleaned_Desc        | Validation |
+| ----------- | ----------------------------------------- | -------------- | -------------- | -------------- | -------------------- | ---------- |
+| BMW-Z4-002  | BMW Z4 (G29) 18-24 Conscious Carpet 4380  | 52.00          | 89.99          | TOP LEVEL CODE | BMW Z4 18-24 Carpet  | OK         |
 
 `Validation` is `ERROR` when `Cleaned_Desc` exceeds `MAX_DESCRIPTION_LENGTH` (default 40 characters).
-
-**Quick-clean mode** → `output.xlsx`:
-
-| original                             | cleaned             | is_valid | validation_issues | retry_count |
-| ------------------------------------ | ------------------- | -------- | ------------------ | ------------ |
-| BMW X2 18-24 Conscious Carpet 3639-0 | BMW X2 18-24 Carpet | TRUE     |                     | 0            |
-
-Error records for either mode are written to `error_log.txt`.
 
 ---
 

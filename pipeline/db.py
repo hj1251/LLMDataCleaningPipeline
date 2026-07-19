@@ -29,7 +29,7 @@ def fetch_top_level_items() -> pd.DataFrame:
             "SQL_SERVER not configured — loading demo catalogue from %s",
             settings.demo_catalogue_path,
         )
-        df = pd.read_csv(settings.demo_catalogue_path)
+        df = pd.read_excel(settings.demo_catalogue_path)
 
     return df[REQUIRED_COLUMNS]
 

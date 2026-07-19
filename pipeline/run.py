@@ -47,4 +47,4 @@ def _load_existing_items() -> pd.DataFrame | None:
     if not os.path.exists(path):
         logger.warning("No existing items file at %s — treating all catalogue rows as new", path)
         return None
-    return pd.read_csv(path)
+    return pd.read_excel(path)

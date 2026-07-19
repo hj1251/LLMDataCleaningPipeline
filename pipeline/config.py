@@ -37,8 +37,8 @@ class Settings:
     max_description_length: int = int(os.getenv("MAX_DESCRIPTION_LENGTH", "40"))
 
     # File paths
-    demo_catalogue_path: str = _path("DEMO_CATALOGUE_PATH", "sample_data/toplevelcode_demo.csv")
-    existing_items_path: str = _path("EXISTING_ITEMS_PATH", "sample_data/items_demo.csv")
+    demo_catalogue_path: str = _path("DEMO_CATALOGUE_PATH", "sample_data/toplevelcode_demo.xlsx")
+    existing_items_path: str = _path("EXISTING_ITEMS_PATH", "sample_data/items_demo.xlsx")
     cache_path: str = _path("CACHE_PATH", "cache.json")
     log_path: str = _path("LOG_PATH", "pipeline.log")
 
