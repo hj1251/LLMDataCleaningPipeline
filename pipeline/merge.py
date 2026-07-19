@@ -23,9 +23,13 @@ def build_upload_file(new_items_df: pd.DataFrame, cleaned_df: pd.DataFrame) -> p
     left = new_items_df.copy()
     left["STKCODE"] = left["STKCODE"].astype(str)
 
+    # Only STKCODE + the cleaned text are needed from the LLM output — everything
+    # else (price, sort key) comes back from the original catalogue row via the merge.
     right = cleaned_df[["STKCODE", "cleaned"]].rename(columns={"cleaned": "Cleaned_Desc"}).copy()
     right["STKCODE"] = right["STKCODE"].astype(str)
 
+    # Left join so a row is still produced (with an empty Cleaned_Desc, which
+    # _validate_length below flags as ERROR) even if cleaning failed for that item.
     merged = left.merge(right, on="STKCODE", how="left")
     merged["Validation"] = merged["Cleaned_Desc"].apply(_validate_length)
 

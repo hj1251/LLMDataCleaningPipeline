@@ -37,6 +37,9 @@ def _save_cache():
 
 def clean_batch(text_list: list[str]) -> list[dict]:
     """Clean a batch of raw descriptions via the LLM, returning ``[{"cleaned": ...}, ...]``."""
+    # The cache key is the exact ordered batch, not per-row — re-running the
+    # pipeline on the same catalogue reuses results instead of re-paying for them,
+    # but changing even one row in a batch means the whole batch is re-sent.
     cache_key = json.dumps(text_list, ensure_ascii=False)
 
     if cache_key in _cache:
@@ -96,6 +99,8 @@ Input:
 
         content = response.choices[0].message.content.strip()
 
+        # Models sometimes wrap JSON in a markdown code fence despite being asked
+        # not to — strip it before parsing rather than failing the whole batch.
         if content.startswith("```"):
             content = content.replace("```json", "").replace("```JSON", "").replace("```", "").strip()
 

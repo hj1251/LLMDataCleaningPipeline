@@ -35,6 +35,8 @@ def fetch_catalogue_items() -> pd.DataFrame:
             settings.demo_catalogue_path,
         )
         df = pd.read_excel(settings.demo_catalogue_path)
+        # The demo file has no WHERE clause to lean on like the SQL Server path
+        # does, so the same stk_sort_key filter is applied here in pandas.
         df = df[df["stk_sort_key"] == settings.stk_sort_key_filter]
 
     return df[REQUIRED_COLUMNS]

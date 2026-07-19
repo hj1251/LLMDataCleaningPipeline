@@ -21,6 +21,8 @@ def _get_client() -> OpenAI:
 
 def retry(original: str, cleaned: str, issues: list[str]) -> str:
     """Ask the LLM to fix a description that failed validation."""
+    # Feeding back the specific validation issues (not just "try again") gives the
+    # model a concrete target instead of repeating the same mistake a second time.
     prompt = f"""
     You previously cleaned this text incorrectly.
 

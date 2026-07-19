@@ -17,6 +17,9 @@ def clean_texts(id_text_pairs: list[tuple[str, str]]) -> tuple[pd.DataFrame, lis
     results: list[dict] = []
     errors: list[str] = []
 
+    # Split into fixed-size batches so each LLM call cleans several rows at once
+    # (fewer requests) while still capping how much can fail together; batches run
+    # concurrently via the thread pool since each call is a blocking network request.
     with ThreadPoolExecutor(max_workers=settings.max_workers) as executor:
         futures = [
             executor.submit(
@@ -26,6 +29,9 @@ def clean_texts(id_text_pairs: list[tuple[str, str]]) -> tuple[pd.DataFrame, lis
             )
             for i in range(0, len(id_text_pairs), settings.batch_size)
         ]
+        # as_completed rather than iterating `futures` in order: results are
+        # collected as batches finish, not in submission order — fine here since
+        # every row carries its own id and the output isn't order-dependent.
         for future in as_completed(futures):
             batch_results, batch_errors = future.result()
             results.extend(batch_results)
@@ -51,6 +57,9 @@ def _process_batch(batch: list[tuple[str, str]], batch_number: int) -> tuple[lis
             local_results.append(_process_row(item_id, raw, cleaned))
 
     except Exception as e:
+        # Whole-batch failure (bad JSON, API error, mismatched count): every row in
+        # the batch gets an error row instead of the pipeline crashing outright, so
+        # one bad batch doesn't take down rows that would have cleaned fine.
         local_errors.append(f"Batch {batch_number}: {e}")
         for item_id, raw in batch:
             local_results.append(_error_row(item_id, raw, "BATCH_ERROR"))

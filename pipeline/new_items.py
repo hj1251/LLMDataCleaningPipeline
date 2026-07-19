@@ -13,6 +13,8 @@ def find_new_items(catalogue_df: pd.DataFrame, existing_items_df: pd.DataFrame, 
     ERP. Comparing on ``key`` avoids re-cleaning and re-uploading items that are
     already live.
     """
+    # Cast to str before comparing: STKCODE can come back as a numeric dtype from
+    # Excel/SQL depending on the source, which would otherwise break the match.
     existing_keys = set(existing_items_df[key].astype(str))
     new_df = catalogue_df[~catalogue_df[key].astype(str).isin(existing_keys)].copy()
 

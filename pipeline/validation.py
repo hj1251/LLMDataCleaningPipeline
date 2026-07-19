@@ -1,5 +1,8 @@
 """Structural validation for cleaned product descriptions."""
 
+# Tuned against the "Brand + Model + Year Range + Product Type" shape the LLM
+# prompt asks for — 2 words is roughly the shortest valid output ("BMW Carpet"),
+# 5 is roughly the longest before it starts including extra description noise.
 NOISE_WORDS = {"for", "includes", "tailored"}
 MIN_WORDS = 2
 MAX_WORDS = 5

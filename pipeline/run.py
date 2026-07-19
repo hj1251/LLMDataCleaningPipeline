@@ -27,6 +27,8 @@ def run_pipeline(output_path: str = "upload_file.xlsx", error_log_path: str = "e
         logger.info("No new items found — nothing to clean.")
         return None
 
+    # clean_texts is generic (works on any (id, text) pairs), so STKCODE is passed
+    # through as the "id" and renamed back afterwards to line up with merge.py.
     id_text_pairs = list(zip(new_items_df["STKCODE"].astype(str), new_items_df["STKNAME"].astype(str)))
     cleaned_df, errors = clean_texts(id_text_pairs)
     cleaned_df = cleaned_df.rename(columns={"id": "STKCODE"})

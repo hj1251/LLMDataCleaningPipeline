@@ -10,12 +10,16 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def _path(env_var: str, default_relative: str) -> str:
+    # Defaults are resolved against PROJECT_ROOT rather than the current working
+    # directory, so `python main.py` behaves the same no matter where it's run from.
     value = os.getenv(env_var)
     return value if value else os.path.join(PROJECT_ROOT, default_relative)
 
 
 @dataclass(frozen=True)
 class Settings:
+    # Frozen so settings can't be mutated accidentally once loaded — every module
+    # imports the same `settings` singleton below.
     # OpenAI
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
