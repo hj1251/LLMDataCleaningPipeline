@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Environment
 .env
@@ -8,8 +9,14 @@ __pycache__/
 # Data files
 data.xlsx
 output.xlsx
+upload_file.xlsx
 error_log.txt
+cache.json
+pipeline.log
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Virtual environment
+venv/
