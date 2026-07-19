@@ -39,7 +39,7 @@ Ships with a bundled demo dataset, so the full pipeline runs out of the box with
 ```text
 SQL Server (or demo Excel data)
         ↓
-Top Level Code catalogue
+Catalogue, filtered by STK_SORT_KEY_FILTER (default: TOP LEVEL CODE)
         ↓
 Diff against items already in the ERP  →  new items only
         ↓
@@ -97,6 +97,7 @@ Edit `.env` and set at least `OPENAI_API_KEY`. Everything else is optional:
 
 * Leave `SQL_SERVER` / `SQL_DATABASE` blank to run against the bundled demo data in `sample_data/`.
 * To connect to a real SQL Server ERP, fill in `SQL_SERVER`, `SQL_DATABASE`, `SQL_USERNAME`, `SQL_PASSWORD`, and make sure the [Microsoft ODBC Driver for SQL Server](https://learn.microsoft.com/sql/connect/odbc/download-odbc-driver-for-sql-server) is installed locally.
+* `STK_SORT_KEY_FILTER` controls which `stk_sort_key` category is pulled from the catalogue — a real ERP has more than one, so set this to whichever category you want to clean (defaults to `TOP LEVEL CODE`, matching the demo data).
 
 ---
 

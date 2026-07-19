@@ -27,6 +27,9 @@ class Settings:
     sql_password: str = os.getenv("SQL_PASSWORD", "")
     sql_driver: str = os.getenv("SQL_DRIVER", "ODBC Driver 18 for SQL Server")
 
+    # Which stk_sort_key category to pull from the catalogue (a real ERP has more than one)
+    stk_sort_key_filter: str = os.getenv("STK_SORT_KEY_FILTER", "TOP LEVEL CODE")
+
     # Batching / concurrency
     batch_size: int = int(os.getenv("BATCH_SIZE", "50"))
     small_batch: int = int(os.getenv("SMALL_BATCH", "10"))

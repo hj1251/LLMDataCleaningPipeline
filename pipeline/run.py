@@ -8,7 +8,7 @@ import pandas as pd
 
 from .clean import clean_texts
 from .config import settings
-from .db import fetch_top_level_items
+from .db import fetch_catalogue_items
 from .merge import build_upload_file
 from .new_items import find_new_items
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def run_pipeline(output_path: str = "upload_file.xlsx", error_log_path: str = "error_log.txt") -> pd.DataFrame | None:
-    catalogue_df = fetch_top_level_items()
+    catalogue_df = fetch_catalogue_items()
     catalogue_df = catalogue_df[catalogue_df["STKNAME"].notna()].copy()
     logger.info("Catalogue loaded: %d rows", len(catalogue_df))
 

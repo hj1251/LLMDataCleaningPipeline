@@ -1,6 +1,6 @@
-"""Extract the current Top Level Code catalogue from SQL Server.
+"""Extract the current product catalogue from SQL Server.
 
-Falls back to a bundled demo CSV when no SQL Server is configured, so the
+Falls back to a bundled demo file when no SQL Server is configured, so the
 pipeline can be run end-to-end without real ERP credentials.
 """
 import logging
@@ -11,17 +11,22 @@ from .config import settings
 
 logger = logging.getLogger(__name__)
 
-TOP_LEVEL_CODE_QUERY = """
+CATALOGUE_QUERY = """
 SELECT STKCODE, STKNAME, STK_COSTPRICE, STK_BASEPRICE, stk_sort_key
 FROM dbo.StockItems
-WHERE stk_sort_key = 'TOP LEVEL CODE'
+WHERE stk_sort_key = ?
 """
 
 REQUIRED_COLUMNS = ["STKCODE", "STKNAME", "STK_COSTPRICE", "STK_BASEPRICE", "stk_sort_key"]
 
 
-def fetch_top_level_items() -> pd.DataFrame:
-    """Return the current Top Level Code catalogue as a DataFrame."""
+def fetch_catalogue_items() -> pd.DataFrame:
+    """Return the ERP catalogue as a DataFrame, filtered to ``settings.stk_sort_key_filter``.
+
+    ``stk_sort_key`` is an ERP category field with many possible values (a real
+    catalogue has more than one) — which value to pull is configured via
+    ``STK_SORT_KEY_FILTER`` in ``.env`` rather than hardcoded here.
+    """
     if settings.sql_server and settings.sql_database:
         df = _fetch_from_sql_server()
     else:
@@ -30,6 +35,7 @@ def fetch_top_level_items() -> pd.DataFrame:
             settings.demo_catalogue_path,
         )
         df = pd.read_excel(settings.demo_catalogue_path)
+        df = df[df["stk_sort_key"] == settings.stk_sort_key_filter]
 
     return df[REQUIRED_COLUMNS]
 
@@ -47,7 +53,7 @@ def _fetch_from_sql_server() -> pd.DataFrame:
 
     logger.info("Connecting to SQL Server %s/%s", settings.sql_server, settings.sql_database)
     with pyodbc.connect(conn_str, timeout=30) as conn:
-        df = pd.read_sql(TOP_LEVEL_CODE_QUERY, conn)
+        df = pd.read_sql(CATALOGUE_QUERY, conn, params=[settings.stk_sort_key_filter])
 
-    logger.info("Fetched %d rows from SQL Server", len(df))
+    logger.info("Fetched %d rows from SQL Server (stk_sort_key=%s)", len(df), settings.stk_sort_key_filter)
     return df
