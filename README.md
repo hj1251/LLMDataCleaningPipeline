@@ -20,7 +20,6 @@ Ships with a bundled demo dataset, so the full pipeline runs out of the box with
 * Local response cache to avoid re-paying for identical LLM calls
 * Parallel execution via a thread pool
 * Environment-driven configuration (`.env`), no secrets in code
-* Unit tests and CI (GitHub Actions)
 * Docker deployment ready
 
 ---
@@ -73,11 +72,8 @@ LLMDataCleaningPipeline/
 ├── sample_data/
 │   ├── toplevelcode_demo.xlsx  # demo catalogue (used when SQL Server is unset)
 │   └── items_demo.xlsx         # demo "already imported" items
-├── tests/                      # pytest unit tests
-├── .github/workflows/tests.yml # CI
 ├── .env.example
 ├── requirements.txt
-├── requirements-dev.txt
 └── Dockerfile
 ```
 
@@ -135,17 +131,6 @@ docker run --env-file .env llm-data-cleaning-pipeline
 
 ---
 
-## Tests
-
-```bash
-pip install -r requirements-dev.txt
-pytest
-```
-
-Unit tests cover the pure-logic modules (`validation`, `new_items`, `merge`) and run in CI on every push via GitHub Actions — no OpenAI or SQL Server access required.
-
----
-
 ## Tech Stack
 
 * Python
@@ -153,7 +138,6 @@ Unit tests cover the pure-logic modules (`validation`, `new_items`, `merge`) and
 * Pandas
 * SQL Server (`pyodbc`)
 * ThreadPoolExecutor
-* pytest + GitHub Actions
 * Docker
 
 ---
