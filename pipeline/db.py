@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 TOP_LEVEL_CODE_QUERY = """
 SELECT STKCODE, STKNAME, STK_COSTPRICE, STK_BASEPRICE, stk_sort_key
 FROM dbo.StockItems
-WHERE stk_sort_key = 'TOPLEVEL'
+WHERE stk_sort_key = 'TOP LEVEL CODE'
 """
 
 REQUIRED_COLUMNS = ["STKCODE", "STKNAME", "STK_COSTPRICE", "STK_BASEPRICE", "stk_sort_key"]

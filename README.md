@@ -137,7 +137,7 @@ docker run --env-file .env llm-data-cleaning-pipeline
 
 | STKCODE     | STKNAME                              | STK_COSTPRICE | STK_BASEPRICE | stk_sort_key | Cleaned_Desc         | Validation |
 | ----------- | ------------------------------------- | -------------- | -------------- | ------------- | --------------------- | ---------- |
-| BMW-Z4-002  | BMW Z4 (G29) 18-24 Conscious Carpet 4380 | 52.00       | 89.99          | TOPLEVEL      | BMW Z4 18-24 Carpet    | OK         |
+| BMW-Z4-002  | BMW Z4 (G29) 18-24 Conscious Carpet 4380 | 52.00       | 89.99          | TOP LEVEL CODE      | BMW Z4 18-24 Carpet    | OK         |
 
 `Validation` is `ERROR` when `Cleaned_Desc` exceeds `MAX_DESCRIPTION_LENGTH` (default 40 characters).
 

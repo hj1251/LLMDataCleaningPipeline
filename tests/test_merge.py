@@ -10,7 +10,7 @@ def test_build_upload_file_flags_long_descriptions():
             "STKNAME": ["raw a1", "raw a2"],
             "STK_COSTPRICE": [10.0, 20.0],
             "STK_BASEPRICE": [15.0, 25.0],
-            "stk_sort_key": ["TOPLEVEL", "TOPLEVEL"],
+            "stk_sort_key": ["TOP LEVEL CODE", "TOP LEVEL CODE"],
         }
     )
     cleaned = pd.DataFrame(
