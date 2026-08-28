@@ -131,17 +131,6 @@ docker run --env-file .env llm-data-cleaning-pipeline
 
 ---
 
-## Tech Stack
-
-* Python
-* OpenAI API
-* Pandas
-* SQL Server (`pyodbc`)
-* ThreadPoolExecutor
-* Docker
-
----
-
 ## Future Improvements
 
 * Resume support for interrupted runs
